@@ -122,7 +122,22 @@ def _make_driver(headless: bool = True) -> webdriver.Chrome:
     chrome_opts.add_argument("--no-sandbox")
     chrome_opts.add_argument("--disable-dev-shm-usage")
     chrome_opts.add_argument("--window-size=1920,1080")
-    service = Service(ChromeDriverManager().install())
+    chrome_opts.add_argument("--single-process")
+    chrome_opts.add_argument("--disable-background-timer-throttling")
+    chrome_opts.add_argument("--disable-renderer-backgrounding")
+    chrome_opts.add_argument("--disable-backgrounding-occluded-windows")
+    chrome_opts.add_argument("--disable-extensions")
+    chrome_opts.add_argument("--disable-plugins")
+    chrome_opts.add_argument("--disable-images")  # Speeds up loading
+    chrome_opts.add_argument("--disable-javascript")  # May help with some sites
+    
+    # For Railway deployment - use system Chrome
+    try:
+        service = Service(ChromeDriverManager().install())
+    except Exception:
+        # Fallback for Railway if ChromeDriverManager fails
+        service = Service()
+    
     return webdriver.Chrome(service=service, options=chrome_opts)
 
 def _analyze_one_with_debugging(target_url: str, timeout: int = DEFAULT_TIMEOUT) -> tuple[str, List[str]]:
