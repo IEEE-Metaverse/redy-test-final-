@@ -153,8 +153,18 @@ def run(target_url: str, headless: bool = True, timeout: int = DEFAULT_TIMEOUT):
     chrome_opts.add_argument("--no-sandbox")
     chrome_opts.add_argument("--disable-dev-shm-usage")
     chrome_opts.add_argument("--window-size=1920,1080")
+    chrome_opts.add_argument("--single-process")
+    chrome_opts.add_argument("--disable-background-timer-throttling")
+    chrome_opts.add_argument("--disable-renderer-backgrounding")
+    chrome_opts.add_argument("--disable-backgrounding-occluded-windows")
+    chrome_opts.add_argument("--disable-extensions")
+    chrome_opts.add_argument("--disable-plugins")
 
-    service = Service(ChromeDriverManager().install())
+    try:
+        service = Service(ChromeDriverManager().install())
+    except Exception:
+        # Fallback for Railway if ChromeDriverManager fails
+        service = Service()
     driver = webdriver.Chrome(service=service, options=chrome_opts)
     wait = WebDriverWait(driver, timeout)
 
