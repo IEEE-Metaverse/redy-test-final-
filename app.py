@@ -430,5 +430,9 @@ def stream():
         return Response("Need at least one ?u=", status=400)
     return Response(stream_with_context(stream_analysis(urls)), mimetype="text/event-stream")
 
-if __name__ == "__main__":
-    app.run(debug=True, host="127.0.0.1", port=5000, threaded=True)
+import os
+
+# At the end of your app.py file, change:
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
